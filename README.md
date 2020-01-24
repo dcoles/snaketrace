@@ -4,7 +4,7 @@ An `strace`-like tool for [Python audit events](https://docs.python.org/3/librar
 
 ## Requirements
 
-- Python 3.8 or newer
+- Python 3.8 or later
 
 ## Installation
 
