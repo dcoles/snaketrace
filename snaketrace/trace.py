@@ -43,7 +43,7 @@ def trace(filename: str, args: List[str] = None, **kwargs):
     sys.argv = [filename] + args
     try:
         sys.addaudithook(make_audithook(**kwargs))
-        exec(program)
+        exec(program, {})
     finally:
         # Restore `argv`
         sys.argv = old_argv
