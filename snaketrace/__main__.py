@@ -1,9 +1,16 @@
 import argparse
+import ctypes
+import sys
 
 from snaketrace import trace
 
 
 def main():
+    if sys.platform == 'win32':
+        # Ensure ANSI/VT100 mode is enabled
+        kernel32 = ctypes.windll.kernel32
+        kernel32.SetConsoleMode(kernel32.GetStdHandle(-12), 0x0007)
+
     parser = argparse.ArgumentParser(description='Trace Python audit events')
     parser.add_argument('-c', '--color', action='store_true', help='colorize output')
     parser.add_argument('-e', '--filter', help='filter audit events matching glob pattern')
