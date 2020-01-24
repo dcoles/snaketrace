@@ -1,3 +1,4 @@
+import os
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as f:
@@ -21,6 +22,8 @@ setup(
     entry_points={
         'console_scripts': [
             'snaketrace = snaketrace.__main__:main',
-        ]
+        ] + ([
+            '\N{SNAKE}trace = snaketrace.__main__:main',
+        ] if os.getenv('ANTIGRAVITY') else []),
     },
 )
