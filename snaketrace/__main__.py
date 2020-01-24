@@ -1,6 +1,6 @@
 import argparse
 
-from pytrace import trace
+from snaketrace import trace
 
 
 def main():

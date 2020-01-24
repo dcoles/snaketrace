@@ -1,4 +1,4 @@
-# PyTrace
+# SnakeTrace &#x1F40D;
 
 An `strace`-like tool for [Python audit events](https://docs.python.org/3/library/audit_events.html#audit-events).
 
@@ -15,7 +15,7 @@ python3 setup.py install [--user]
 ## Usage
 
 ```
-usage: pytrace [-h] [-o OUTPUT] [-e FILTER] file [args [args ...]]
+usage: snaketrace [-h] [-o OUTPUT] [-e FILTER] file [args [args ...]]
 
 Trace Python audit events
 
