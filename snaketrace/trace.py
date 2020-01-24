@@ -49,21 +49,22 @@ def trace(filename: str, args: List[str] = None, **kwargs):
         sys.argv = old_argv
 
 
-def make_audithook(output: io.TextIOBase = None, filter: str = None, color = False):
+def make_audithook(output: io.TextIOBase = None, filter: str = None, color: bool = None):
     """
     Create an audit hook suitable for `sys.addaudithook`.
 
     :param output: File to output trace to
     :param filter: Filter audit events matching a glob
-    :param color: Colourize output
+    :param color: Colourize output (use None for auto-detect)
     """
     output = output or sys.stderr
+    color = color if color is not None else output.isatty()
 
     def audit(name, args):
         if filter and not fnmatch.fnmatchcase(name, filter):
             return
 
-        if color and output.isatty():
+        if color:
             print(f'{ANSI_YELLOW}{name}({ANSI_RESET}'
                   f'{f"{ANSI_YELLOW}, ".join(map(repr_color, args))}'
                   f'{ANSI_YELLOW}){ANSI_RESET}', file=output)

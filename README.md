@@ -15,20 +15,23 @@ python3 setup.py install [--user]
 ## Usage
 
 ```
-usage: snaketrace [-h] [-o OUTPUT] [-e FILTER] file [args [args ...]]
+usage: snaketrace [-h] [--color {never,always,auto}] [-e FILTER] [-o OUTPUT]
+                   filename [args [args ...]]
 
 Trace Python audit events
 
 positional arguments:
-  file                  Python script
+  filename              Python script
   args                  Python script arguments
 
 optional arguments:
   -h, --help            show this help message and exit
-  -o OUTPUT, --output OUTPUT
-                        write output to file with given name
+  --color {never,always,auto}
+                        colorize output
   -e FILTER, --filter FILTER
                         filter audit events matching glob pattern
+  -o OUTPUT, --output OUTPUT
+                        write output to file with given name
 ``` 
 
 # License
