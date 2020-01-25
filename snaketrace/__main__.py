@@ -14,6 +14,8 @@ def main():
         kernel32.SetConsoleMode(kernel32.GetStdHandle(-12), 0x0007)
 
     parser = argparse.ArgumentParser(prog='snaketrace', description='Trace Python audit events')
+    parser.add_argument('--tsv', dest='output_format', action='store_const', const=trace.OutputFormat.TSV,
+                        help='output as tab separated values')
     parser.add_argument('--color', choices=['never', 'always', 'auto'],
                         help='colorize output', default='auto')
     timefmt_group = parser.add_mutually_exclusive_group()
@@ -33,7 +35,8 @@ def main():
     color = args.color == 'always' if args.color != 'auto' else None
     output = open(args.output, 'w') if args.output else None
     try:
-        trace.trace(args.filename, args.args, output=output, filters=args.filter, color=color, timefmt=args.timefmt)
+        trace.trace(args.filename, args.args, output=output, output_format=args.output_format,
+                    filters=args.filter, color=color, timefmt=args.timefmt)
     finally:
         if output:
             output.close()

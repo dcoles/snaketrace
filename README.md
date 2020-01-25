@@ -15,8 +15,7 @@ python3 setup.py install [--user]
 ## Usage
 
 ```
-usage: snaketrace [-h] [--color {never,always,auto}] [-t | -tt | --timefmt TIMEFMT] [-e FILTER] [-o OUTPUT]
-                  filename [args [args ...]]
+usage: snaketrace [-h] [--tsv] [--color {never,always,auto}] [-t | -tt | --timefmt TIMEFMT] [-e FILTER] [-o OUTPUT] filename [args [args ...]]
 
 Trace Python audit events
 
@@ -26,6 +25,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --tsv                 output as tab separated values
   --color {never,always,auto}
                         colorize output
   -t                    print absolute timestamp

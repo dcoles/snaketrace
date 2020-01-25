@@ -1,12 +1,14 @@
 """
 Trace Python audit events.
 """
-
 import datetime
 import fnmatch
 import sys
 import io
+from enum import Enum
 from typing import *
+
+from snaketrace import tsv
 
 # ANSI terminal escape codes (https://en.wikipedia.org/wiki/ANSI_escape_code#Colors)
 ANSI_RED = '\x1b[95m'
@@ -26,6 +28,10 @@ COLORMAP = {
     float: ANSI_GREEN,
     type(None): ANSI_MAGENTA,
 }
+
+
+class OutputFormat(Enum):
+    TSV = 'tsv'  #: tab-separated values
 
 
 def trace(filename: str, args: List[str] = None, **kwargs):
@@ -50,34 +56,41 @@ def trace(filename: str, args: List[str] = None, **kwargs):
         sys.argv = old_argv
 
 
-def make_audithook(output: io.TextIOBase = None, filters: List[str] = None, color: bool = None, timefmt: str = None):
+def make_audithook(output: io.TextIOBase = None, output_format: OutputFormat = None,
+                   filters: List[str] = None, color: bool = None, timefmt: str = None):
     """
     Create an audit hook suitable for `sys.addaudithook`.
 
     :param output: File to output trace to
+    :param output_format: Format to output events as
     :param filters: Filter audit events matching globs
     :param color: Colourize output (use None for auto-detect)
     :param timefmt: Print absolute timestamp using this format (see https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
     """
     output = output or sys.stderr
     color = color if color is not None else output.isatty()
+    tsv_writer = tsv.TSVWriter(output)
 
     def audit(name, args):
         if filters and not any((fnmatch.fnmatchcase(name, f) for f in filters)):
             return
 
-        if timefmt:
+        if output_format is OutputFormat.TSV:
             ts = datetime.datetime.now()
-            t = f'{ts:{timefmt}} '
+            tsv_writer.writerow([ts.date(), ts.time(), name] + list(args))
         else:
-            t = ''
+            if timefmt:
+                ts = datetime.datetime.now()
+                t = f'{ts:{timefmt}} '
+            else:
+                t = ''
 
-        if color:
-            print(f'{ANSI_YELLOW}{t}{name}({ANSI_RESET}'
-                  f'{f"{ANSI_YELLOW}, ".join(map(repr_color, args))}'
-                  f'{ANSI_YELLOW}){ANSI_RESET}', file=output)
-        else:
-            print(f'{t}{name}({", ".join(map(repr, args))})', file=output)
+            if color:
+                print(f'{ANSI_YELLOW}{t}{name}({ANSI_RESET}'
+                      f'{f"{ANSI_YELLOW}, ".join(map(repr_color, args))}'
+                      f'{ANSI_YELLOW}){ANSI_RESET}', file=output)
+            else:
+                print(f'{t}{name}({", ".join(map(repr, args))})', file=output)
 
     return audit
 
