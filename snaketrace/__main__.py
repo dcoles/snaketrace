@@ -23,7 +23,8 @@ def main():
                                help='print absolute timestamp with usec')
     timefmt_group.add_argument('--timefmt', dest='timefmt',
                                help='print absolute timestamp with custom format')
-    parser.add_argument('-e', '--filter', help='filter audit events matching glob pattern')
+    parser.add_argument('-e', '--filter', action='append',
+                        help='filter audit events matching glob pattern (may be specified multiple times)')
     parser.add_argument('-o', '--output', help='write output to file with given name')
     parser.add_argument('filename', help='Python script')
     parser.add_argument('args', help='Python script arguments', nargs='*')
@@ -32,7 +33,7 @@ def main():
     color = args.color == 'always' if args.color != 'auto' else None
     output = open(args.output, 'w') if args.output else None
     try:
-        trace.trace(args.filename, args.args, output=output, filter=args.filter, color=color, timefmt=args.timefmt)
+        trace.trace(args.filename, args.args, output=output, filters=args.filter, color=color, timefmt=args.timefmt)
     finally:
         if output:
             output.close()
