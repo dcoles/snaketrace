@@ -2,6 +2,7 @@
 Trace Python audit events.
 """
 
+import datetime
 import fnmatch
 import sys
 import io
@@ -49,13 +50,14 @@ def trace(filename: str, args: List[str] = None, **kwargs):
         sys.argv = old_argv
 
 
-def make_audithook(output: io.TextIOBase = None, filter: str = None, color: bool = None):
+def make_audithook(output: io.TextIOBase = None, filter: str = None, color: bool = None, timefmt: str = None):
     """
     Create an audit hook suitable for `sys.addaudithook`.
 
     :param output: File to output trace to
     :param filter: Filter audit events matching a glob
     :param color: Colourize output (use None for auto-detect)
+    :param timefmt: Print absolute timestamp using this format (see https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
     """
     output = output or sys.stderr
     color = color if color is not None else output.isatty()
@@ -64,12 +66,18 @@ def make_audithook(output: io.TextIOBase = None, filter: str = None, color: bool
         if filter and not fnmatch.fnmatchcase(name, filter):
             return
 
+        if timefmt:
+            ts = datetime.datetime.now()
+            t = f'{ts:{timefmt}} '
+        else:
+            t = ''
+
         if color:
-            print(f'{ANSI_YELLOW}{name}({ANSI_RESET}'
+            print(f'{ANSI_YELLOW}{t}{name}({ANSI_RESET}'
                   f'{f"{ANSI_YELLOW}, ".join(map(repr_color, args))}'
                   f'{ANSI_YELLOW}){ANSI_RESET}', file=output)
         else:
-            print(f'{name}({", ".join(map(repr, args))})', file=output)
+            print(f'{t}{name}({", ".join(map(repr, args))})', file=output)
 
     return audit
 

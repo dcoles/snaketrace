@@ -15,7 +15,7 @@ python3 setup.py install [--user]
 ## Usage
 
 ```
-usage: snaketrace [-h] [--color {never,always,auto}] [-e FILTER] [-o OUTPUT]
+usage: snaketrace [-h] [--color {never,always,auto}] [-t | -tt | --timefmt TIMEFMT] [-e FILTER] [-o OUTPUT]
                    filename [args [args ...]]
 
 Trace Python audit events
@@ -28,6 +28,9 @@ optional arguments:
   -h, --help            show this help message and exit
   --color {never,always,auto}
                         colorize output
+  -t                    print absolute timestamp
+  -tt                   print absolute timestamp with usec
+  --timefmt TIMEFMT     print absolute timestamp with custom format
   -e FILTER, --filter FILTER
                         filter audit events matching glob pattern
   -o OUTPUT, --output OUTPUT
