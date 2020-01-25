@@ -8,7 +8,16 @@ An `strace`-like tool for [Python audit events](https://docs.python.org/3/librar
 
 ## Installation
 
+Latest release via [`pip`](https://pip.pypa.io):
+
 ```bash
+pip install snaketrace [--user]
+```
+
+via Git:
+
+```bash
+git clone https://github.com/dcoles/snaketrace.git; cd snaketrace
 python3 setup.py install [--user]
 ```
 
