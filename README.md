@@ -24,12 +24,14 @@ python3 setup.py install [--user]
 ## Usage
 
 ```
-usage: snaketrace [-h] [--tsv] [--color {never,always,auto}] [-t | -tt | --timefmt TIMEFMT] [-e FILTER] [-o OUTPUT] filename [args [args ...]]
+usage: snaketrace [-h] [--tsv] [--color {never,always,auto}] [-t | -tt | --timefmt TIMEFMT] [-e FILTER]
+                  [-o OUTPUT]
+                  script [args [args ...]]
 
 Trace Python audit events
 
 positional arguments:
-  filename              Python script
+  script                Python script
   args                  Python script arguments
 
 optional arguments:

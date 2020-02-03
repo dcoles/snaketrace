@@ -29,14 +29,14 @@ def main():
     parser.add_argument('-e', '--filter', action='append',
                         help='filter audit events matching glob pattern (may be specified multiple times)')
     parser.add_argument('-o', '--output', help='write output to file with given name')
-    parser.add_argument('filename', help='Python script')
+    parser.add_argument('script', help='Python script')
     parser.add_argument('args', help='Python script arguments', nargs='*')
     args = parser.parse_args()
 
     color = args.color == 'always' if args.color != 'auto' else None
     output = open(args.output, 'w') if args.output else None
     try:
-        trace.trace(args.filename, args.args, output=output, output_format=args.output_format,
+        trace.trace(args.script, args.args, output=output, output_format=args.output_format,
                     filters=args.filter, color=color, timefmt=args.timefmt)
     finally:
         if output:
