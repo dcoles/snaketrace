@@ -7,6 +7,7 @@ from snaketrace import trace
 TIMEFMT_T = '%H:%M:%S'
 TIMEFMT_TT = '%H:%M:%S.%f'
 
+
 def main():
     if sys.platform == 'win32':
         # Ensure ANSI/VT100 mode is enabled

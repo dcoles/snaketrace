@@ -1,10 +1,12 @@
 """
 Trace Python audit events.
 """
+import builtins
 import datetime
 import fnmatch
 import sys
 import io
+import traceback
 from enum import Enum
 from typing import *
 
@@ -34,26 +36,31 @@ class OutputFormat(Enum):
     TSV = 'tsv'  #: tab-separated values
 
 
-def trace(filename: str, args: List[str] = None, **kwargs):
+def trace(filename: str, args: List[str] = None, **kwargs) -> NoReturn:
     """
     Run Python script and trace audit events.
+
+    The program will exit after the script terminates.
 
     :param filename: Python script.
     :param args: Script arguments.
     :param kwargs: Passed through to `make_audithook`.
     """
     with open(filename) as f:
-        program = compile(f.read(), filename, 'exec', dont_inherit=True)
+        module = compile(f.read(), filename, 'exec', dont_inherit=True)
 
-    # Rewrite `argv` for target script
-    old_argv = sys.argv
+    # Rewrite args and clear imported modules for target script
     sys.argv = [filename] + args
+    sys.modules.clear()
+
+    sys.addaudithook(make_audithook(**kwargs))
     try:
-        sys.addaudithook(make_audithook(**kwargs))
-        exec(program, {})
-    finally:
-        # Restore `argv`
-        sys.argv = old_argv
+        exec(module, {'__builtins__': builtins, '__name__': '__main__', '__file__': filename})
+    except Exception as e:
+        traceback.print_exception(type(e), e, e.__traceback__)
+        sys.exit(1)
+    else:
+        sys.exit(0)
 
 
 def make_audithook(output: io.TextIOBase = None, output_format: OutputFormat = None,
