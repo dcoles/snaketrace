@@ -4,6 +4,7 @@ Trace Python audit events.
 import builtins
 import datetime
 import fnmatch
+import runpy
 import sys
 import io
 import traceback
@@ -46,21 +47,21 @@ def trace(script: str, args: List[str] = None, **kwargs) -> NoReturn:
     :param args: Script arguments.
     :param kwargs: Passed through to `make_audithook`.
     """
-    with open(script) as f:
-        module = compile(f.read(), script, 'exec', dont_inherit=True)
-
     # Rewrite args and clear imported modules for target script
-    sys.argv = [script] + args
+    sys.argv[1:] = args
     sys.modules.clear()
     sys.modules['sys'] = sys  # Contains important state
 
+    globals_ = {'__builtins__': builtins}
+
     sys.addaudithook(make_audithook(**kwargs))
     try:
-        exec(module, {'__builtins__': builtins, '__name__': '__main__', '__file__': script})
+        runpy.run_path(script, globals_, run_name='__main__')
     except Exception as e:
         traceback.print_exception(type(e), e, e.__traceback__)
         sys.exit(1)
     else:
+        # It's not possible to remove an audit hook, so we must exit
         sys.exit(0)
 
 
