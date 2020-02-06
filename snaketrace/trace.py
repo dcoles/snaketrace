@@ -52,6 +52,7 @@ def trace(script: str, args: List[str] = None, **kwargs) -> NoReturn:
     # Rewrite args and clear imported modules for target script
     sys.argv = [script] + args
     sys.modules.clear()
+    sys.modules['sys'] = sys  # Contains important state
 
     sys.addaudithook(make_audithook(**kwargs))
     try:
