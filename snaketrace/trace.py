@@ -3,6 +3,7 @@ Trace Python audit events.
 """
 import builtins
 import datetime
+import time
 import fnmatch
 import runpy
 import sys
@@ -52,6 +53,10 @@ def trace(name: str, args: List[str] = None, is_module=False, **kwargs) -> NoRet
     sys.argv[1:] = args
     sys.modules.clear()
     sys.modules['sys'] = sys  # Contains important state
+    if kwargs.get('timefmt'):
+        # The time module must be imported if printing timestamps
+        # otherwise the audit hook gets stuck in a recursive import
+        sys.modules['time'] = time
 
     globals_ = {'__builtins__': builtins}
 
