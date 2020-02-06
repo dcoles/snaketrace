@@ -37,14 +37,15 @@ class OutputFormat(Enum):
     TSV = 'tsv'  #: tab-separated values
 
 
-def trace(script: str, args: List[str] = None, **kwargs) -> NoReturn:
+def trace(name: str, args: List[str] = None, is_module=False, **kwargs) -> NoReturn:
     """
     Run Python script and trace audit events.
 
     The program will exit after the script terminates.
 
-    :param script: Python script.
+    :param name: Python script.
     :param args: Script arguments.
+    :param is_module: Is name a module.
     :param kwargs: Passed through to `make_audithook`.
     """
     # Rewrite args and clear imported modules for target script
@@ -56,7 +57,10 @@ def trace(script: str, args: List[str] = None, **kwargs) -> NoReturn:
 
     sys.addaudithook(make_audithook(**kwargs))
     try:
-        runpy.run_path(script, globals_, run_name='__main__')
+        if is_module:
+            runpy.run_module(name, globals_, run_name='__main__', alter_sys=True)
+        else:
+            runpy.run_path(name, globals_, run_name='__main__')
     except Exception as e:
         traceback.print_exception(type(e), e, e.__traceback__)
         sys.exit(1)
