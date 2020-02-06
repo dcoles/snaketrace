@@ -30,7 +30,7 @@ def main():
                         help='filter audit events matching glob pattern (may be specified multiple times)')
     parser.add_argument('-o', '--output', help='write output to file with given name')
     parser.add_argument('script', help='Python script')
-    parser.add_argument('args', help='Python script arguments', nargs='*')
+    parser.add_argument('args', help='Python script arguments', nargs=argparse.REMAINDER)
     args = parser.parse_args()
 
     color = args.color == 'always' if args.color != 'auto' else None
