@@ -3,16 +3,17 @@ Trace Python audit events.
 """
 import builtins
 import datetime
-import time
 import fnmatch
+import io
 import runpy
 import sys
-import io
+import time
 import traceback
 from enum import Enum
 from typing import *
 
 from snaketrace import tsv
+from snaketrace import MODULES
 
 # ANSI terminal escape codes (https://en.wikipedia.org/wiki/ANSI_escape_code#Colors)
 ANSI_RED = '\x1b[95m'
@@ -49,10 +50,12 @@ def trace(name: str, args: List[str] = None, is_module=False, **kwargs) -> NoRet
     :param is_module: Is name a module.
     :param kwargs: Passed through to `make_audithook`.
     """
-    # Rewrite args and clear imported modules for target script
+    # Rewrite args
     sys.argv[1:] = args
-    sys.modules.clear()
-    sys.modules['sys'] = sys  # Contains important state
+
+    # Clear modules
+    sys.modules = MODULES
+
     if kwargs.get('timefmt'):
         # The time module must be imported if printing timestamps
         # otherwise the audit hook gets stuck in a recursive import
