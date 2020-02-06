@@ -85,25 +85,29 @@ def make_audithook(output: io.TextIOBase = None, output_format: OutputFormat = N
     tsv_writer = tsv.TSVWriter(output)
 
     def audit(name, args):
-        if filters and not any((fnmatch.fnmatchcase(name, f) for f in filters)):
-            return
+        try:
+            if filters and not any((fnmatch.fnmatchcase(name, f) for f in filters)):
+                return
 
-        if output_format is OutputFormat.TSV:
-            ts = datetime.datetime.now()
-            tsv_writer.writerow([ts.date(), ts.time(), name] + list(args))
-        else:
-            if timefmt:
+            if output_format is OutputFormat.TSV:
                 ts = datetime.datetime.now()
-                t = f'{ts:{timefmt}} '
+                tsv_writer.writerow([ts.date(), ts.time(), name] + list(args))
             else:
-                t = ''
+                if timefmt:
+                    ts = datetime.datetime.now()
+                    t = f'{ts:{timefmt}} '
+                else:
+                    t = ''
 
-            if color:
-                print(f'{ANSI_YELLOW}{t}{name}({ANSI_RESET}'
-                      f'{f"{ANSI_YELLOW}, ".join(map(repr_color, args))}'
-                      f'{ANSI_YELLOW}){ANSI_RESET}', file=output)
-            else:
-                print(f'{t}{name}({", ".join(map(repr, args))})', file=output)
+                if color:
+                    print(f'{ANSI_YELLOW}{t}{name}({ANSI_RESET}'
+                          f'{f"{ANSI_YELLOW}, ".join(map(repr_color, args))}'
+                          f'{ANSI_YELLOW}){ANSI_RESET}', file=output)
+                else:
+                    print(f'{t}{name}({", ".join(map(repr, args))})', file=output)
+        except Exception as e:
+            print('snaketrace: Exception in audit hook!!! '
+                  f'{type(e).__name__} at line {e.__traceback__.tb_lineno}: {e}', file=sys.stderr)
 
     return audit
 
