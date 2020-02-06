@@ -2,6 +2,8 @@
 
 An `strace`-like tool for [Python audit events](https://docs.python.org/3/library/audit_events.html#audit-events).
 
+![Screenshot of SnakeTrace](https://user-images.githubusercontent.com/1007415/73980951-14640a80-48e6-11ea-932e-5a3212f59835.png)
+
 ## Requirements
 
 - Python 3.8 or later
