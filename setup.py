@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 
 setup(
     name='snaketrace',
-    version='0.2.0',
+    version='0.3.0',
     description='An strace-like tool for Python audit events',
     long_description=long_description,
     long_description_content_type="text/markdown",
