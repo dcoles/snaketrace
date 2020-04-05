@@ -76,5 +76,3 @@ class TestTrace(unittest.TestCase):
 
         pattern = r'^\d{4}-\d{2}-\d{2}\t\d{2}:\d{2}:\d{2}\.\d{6}\topen\t' + os.devnull + r'\tr\+\t\d+$'
         assert re.search(pattern, p.stderr, flags=re.MULTILINE), f'Got:\n{p.stderr}'
-
-
