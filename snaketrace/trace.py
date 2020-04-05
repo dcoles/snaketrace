@@ -54,7 +54,8 @@ def trace(name: str, args: List[str] = None, is_module=False, **kwargs) -> NoRet
     sys.argv[1:] = args
 
     # Clear modules
-    sys.modules = MODULES
+    sys.modules.clear()
+    sys.modules.update(MODULES)
 
     if kwargs.get('timefmt'):
         # The time module must be imported if printing timestamps

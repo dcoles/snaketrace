@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import unittest
 import subprocess
+import tempfile
 
 BASEDIR = Path(__file__).parent
 
@@ -76,3 +77,21 @@ class TestTrace(unittest.TestCase):
 
         pattern = r'^\d{4}-\d{2}-\d{2}\t\d{2}:\d{2}:\d{2}\.\d{6}\topen\t' + os.devnull + r'\tr\+\t\d+$'
         assert re.search(pattern, p.stderr, flags=re.MULTILINE), f'Got:\n{p.stderr}'
+
+    def test_import_pickle(self):
+        """
+        Check we can import `pickle` module.
+
+        See https://github.com/dcoles/snaketrace/issues/2
+        """
+        fname = None
+        try:
+            # Windows sharing mode prevents having file open simultaneously
+            with tempfile.NamedTemporaryFile('w', delete=False) as f:
+                fname = f.name
+                f.write('import pickle\n')
+
+            snaketrace(fname)
+        finally:
+            if fname:
+                os.unlink(fname)
